@@ -10,7 +10,7 @@ interface CompletionList {
 interface CompletionItem {
     label: string;
     kind?: CompletionItemKind;
-    insertText?:string;
+    insertText?: string;
     details?: CompletionItemDetails;
 }
 
@@ -65,7 +65,7 @@ function keywords(curWord: string): CompletionList {
 
     const items = SyntaxScriptDictionary.Keyword
         .filter((word) => word.startsWith(curWord))
-        .slice(0,MAX_LENGTH)
+        .slice(0, MAX_LENGTH)
         .map(k => { return { label: k, kind: CompletionItemKind.Keyword }; });
 
     return {
@@ -75,11 +75,11 @@ function keywords(curWord: string): CompletionList {
 
 }
 
-function ruleNames(curWord: string,quoteType:string,addQuote:boolean): CompletionList {
+function ruleNames(curWord: string, quoteType: string, addQuote: boolean): CompletionList {
     const items = SyntaxScriptDictionary.Rule
         .filter((rule) => rule.name.startsWith(curWord))
-        .slice(0,MAX_LENGTH)
-        .map(k => { return { label: k.name, kind: CompletionItemKind.Constant, insertText:`${k.name}${addQuote?quoteType+':':''}` }; });
+        .slice(0, MAX_LENGTH)
+        .map(k => { return { label: k.name, kind: CompletionItemKind.Constant, insertText: `${k.name}${addQuote ? quoteType + ':' : ''}` }; });
 
     return {
         isIncomplete: items.length === MAX_LENGTH,
@@ -89,8 +89,10 @@ function ruleNames(curWord: string,quoteType:string,addQuote:boolean): Completio
 
 
 const regexes = {
-    ruleDefinition: /^(export\s*)?rule\s*('|")([a-z]*)$/
-}
+    ruleDefinition: /^(export\s+)?rule\s+('|")([a-zA-Z\-]*)$/,
+    ruleValue: /^(export\s+)?rule\s+(('[\u0000-\uffff]*'|"[\u0000-\uffff]*")):\s*$/,
+    fullKeyword: /(export\s+)?keyword\s+[a-z]+/g,
+};
 
 export function completion(message: RequestMessage): CompletionList | null {
     const params = message.params as CompletionParams;
@@ -103,8 +105,22 @@ export function completion(message: RequestMessage): CompletionList | null {
 
     if (regexes.ruleDefinition.test(lineBeforeCursor)) {
         const match = lineBeforeCursor.match(regexes.ruleDefinition);
-        if(match?.[2]===undefined) return ruleNames(curWord,'\'',false);
-        return ruleNames(curWord,match[2],!lineAfterCursor.startsWith(match[2]));
+        if (!match) return ruleNames(curWord, '\'', false);
+        return ruleNames(curWord, match[2], !lineAfterCursor.startsWith(match[2]));
+    }
+    if (regexes.ruleValue.test(lineBeforeCursor)) {
+        const match = lineBeforeCursor.match(regexes.ruleValue);
+        if (!match) return null;
+        const ruleName = match[3].slice(1, match[3].length - 1);
+        const rule = SyntaxScriptDictionary.Rule.find(r => r.name === ruleName);
+        if (!rule) return null;
+        if (rule.type === 'boolean') return { isIncomplete: false, items: [{ label: 'true', kind: CompletionItemKind.Keyword }, { label: 'false', kind: CompletionItemKind.Keyword }] };
+        if (rule.type === 'keyword') {
+            const keywords = (content.match(regexes.fullKeyword) ?? []).map(r => r.split(/\s+/)[r.startsWith('export')?2:1]);
+            return {isIncomplete:false,items:keywords.map(keyword=>{return {label:keyword,kind:CompletionItemKind.Value}})}
+        }
+
+
     }
 
 
