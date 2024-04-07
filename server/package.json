@@ -1,0 +1,18 @@
+{
+  "name": "syntax-script-server",
+  "description": "Language server for Syntax Script.",
+  "version": "1.0.0",
+  "author": "efekos",
+  "license": "MIT",
+  "engines": {
+    "node": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/efekos/syntax-script "
+  },
+  "dependencies": {
+    "vscode-languageserver": "^8.1.0",
+    "vscode-languageserver-textdocument": "^1.0.8"
+  }
+}
