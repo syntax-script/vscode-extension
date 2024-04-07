@@ -1,14 +1,20 @@
-import { completion, initialize } from "./method";
+import { completion, initialize, didChange } from "./method";
 import { RequestMessage } from "./types";
 
-type RequestMethod = (message: RequestMessage) => unknown;
-const methodMap: Record<string, RequestMethod> = { 'initialize': initialize, 'textDocument/completion': completion };
+type RequestMethod = (message: RequestMessage) => object;
+type NotificationMethod = (message:RequestMessage) => void;
+const methodMap: Record<string, RequestMethod|NotificationMethod> = {
+    'initialize': initialize,
+    'textDocument/completion': completion,
+    'textDocuemnt/didChange': didChange
+};
 
-function respond(id: RequestMessage['id'], result: unknown) {
+function respond(id: RequestMessage['id'], result: object|null) {
+    if(result==null) return;
     const message = JSON.stringify({ id, result });
-    const header = `Content-Length: ${Buffer.byteLength(message,'utf8')}\r\n\r\n`;
+    const header = `Content-Length: ${Buffer.byteLength(message, 'utf8')}\r\n\r\n`;
 
-    process.stdout.write(header+message);
+    process.stdout.write(header + message);
 }
 
 let buffer = '';
@@ -28,7 +34,7 @@ process.stdin.on('data', (dataChunk) => {
         const parsedMessage = JSON.parse(rawMesasge) as RequestMessage;
 
         if (methodMap[parsedMessage.method] !== undefined) {
-            respond(parsedMessage.id, methodMap[parsedMessage.method](parsedMessage));
+            respond(parsedMessage.id, methodMap[parsedMessage.method](parsedMessage)??null);
         }
 
         buffer = buffer.slice(messageStart + contentLength);

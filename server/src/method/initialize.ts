@@ -9,11 +9,12 @@ export interface InitializeResult {
 }
 export type ServerCapabilities = Record<string, unknown>;
 
-export default function initialize(message: RequestMessage): InitializeResult {
+export function initialize(message: RequestMessage): InitializeResult {
 
     return {
         capabilities:{
-            completionProvider:{}
+            completionProvider:{},
+            textDocumentSync:{}
         },
         serverInfo:{
             name:'syntax-script-lsp',
