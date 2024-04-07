@@ -16,10 +16,10 @@ export function activate(context: ExtensionContext) {
   );
 
   const serverOptions: ServerOptions = {
-    run: { module: serverModule, transport: TransportKind.ipc },
+    run: { module: serverModule, transport: TransportKind.stdio },
     debug: {
       module: serverModule,
-      transport: TransportKind.ipc,
+      transport: TransportKind.stdio,
     },
   };
 
@@ -31,8 +31,8 @@ export function activate(context: ExtensionContext) {
   };
 
   client = new LanguageClient(
-    "syntax-script language-server-id",
-    "syntax-script language server name",
+    "syntax-script",
+    "syntax script",
     serverOptions,
     clientOptions
   );
