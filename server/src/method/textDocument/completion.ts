@@ -12,6 +12,8 @@ interface CompletionItem {
     kind?: CompletionItemKind;
     insertText?: string;
     details?: CompletionItemDetails;
+    textEdit?: TextEdit;
+    command?: Command;
 }
 
 export interface CompletionParams extends TextDocumentPositionParams { }
@@ -19,6 +21,16 @@ export interface CompletionParams extends TextDocumentPositionParams { }
 interface Position {
     line: number;
     character: number;
+}
+
+interface Range {
+    start: Position;
+    end: Position;
+}
+
+interface TextEdit {
+    range: Range;
+    newText: TextEdit;
 }
 
 interface TextDocumentPositionParams {
@@ -59,6 +71,12 @@ enum CompletionItemKind {
     TypeParameter = 25
 }
 
+interface Command {
+    title: string;
+    command: string;
+    arguments?: any;
+}
+
 const MAX_LENGTH = 100;
 
 function keywords(curWord: string): CompletionList {
@@ -75,11 +93,22 @@ function keywords(curWord: string): CompletionList {
 
 }
 
-function ruleNames(curWord: string, quoteType: string, addQuote: boolean): CompletionList {
+function ruleNames(curWord: string, quoteType: string, quoter: 'none' | 'end' | 'both',pos:Position): CompletionList {
+    function text(k:{name:string}){
+        return `${quoter === 'both' ? quoteType : ''}${k.name}${quoter !== 'none' ? quoteType + ':' : ''}`;
+    }
+
     const items = SyntaxScriptDictionary.Rule
-        .filter((rule) => rule.name.startsWith(curWord))
+        .filter((rule) => curWord===''?rule:rule.name.startsWith(curWord))
         .slice(0, MAX_LENGTH)
-        .map(k => { return { label: k.name, kind: CompletionItemKind.Constant, insertText: `${k.name}${addQuote ? quoteType + ':' : ''}` }; });
+        .map(k => {
+            return {
+                label: k.name, kind: CompletionItemKind.Constant,
+                insertText: text(k),
+                command: { title: 'suggest', command: 'editor.action.triggerSuggest' },
+                textEdit: quoter==='none'? {range:{start:{line:pos.line,character:pos.character},end:{line:pos.line,character:pos.character+k.name.length+3}},newText:`${text(k)}${quoteType}:`} : undefined
+            } as CompletionItem;
+        });
 
     return {
         isIncomplete: items.length === MAX_LENGTH,
@@ -92,6 +121,7 @@ const regexes = {
     ruleDefinition: /^(export\s+)?rule\s+('|")([a-zA-Z\-]*)$/,
     ruleValue: /^(export\s+)?rule\s+(('[\u0000-\uffff]*'|"[\u0000-\uffff]*")):\s*$/,
     fullKeyword: /(export\s+)?keyword\s+[a-z]+/g,
+    ruleStart: /^(export\s+)?rule\s+$/
 };
 
 export function completion(message: RequestMessage): CompletionList | null {
@@ -103,10 +133,13 @@ export function completion(message: RequestMessage): CompletionList | null {
     const lineAfterCursor = currentLine.slice(params.position.character);
     const curWord = lineBeforeCursor.replace(/.*\W(.*?)/, '$1');
 
+    if(regexes.ruleStart.test(lineBeforeCursor)){
+        return ruleNames(curWord, '"','both',params.position);
+    }
     if (regexes.ruleDefinition.test(lineBeforeCursor)) {
         const match = lineBeforeCursor.match(regexes.ruleDefinition);
-        if (!match) return ruleNames(curWord, '\'', false);
-        return ruleNames(curWord, match[2], !lineAfterCursor.startsWith(match[2]));
+        if (!match) return ruleNames(curWord, '\'', 'none',params.position);
+        return ruleNames(curWord, match[2], lineAfterCursor.startsWith(match[2])?'none':'end',params.position);
     }
     if (regexes.ruleValue.test(lineBeforeCursor)) {
         const match = lineBeforeCursor.match(regexes.ruleValue);
@@ -116,8 +149,8 @@ export function completion(message: RequestMessage): CompletionList | null {
         if (!rule) return null;
         if (rule.type === 'boolean') return { isIncomplete: false, items: [{ label: 'true', kind: CompletionItemKind.Keyword }, { label: 'false', kind: CompletionItemKind.Keyword }] };
         if (rule.type === 'keyword') {
-            const keywords = (content.match(regexes.fullKeyword) ?? []).map(r => r.split(/\s+/)[r.startsWith('export')?2:1]);
-            return {isIncomplete:false,items:keywords.map(keyword=>{return {label:keyword,kind:CompletionItemKind.Value}})}
+            const keywords = (content.match(regexes.fullKeyword) ?? []).map(r => r.split(/\s+/)[r.startsWith('export') ? 2 : 1]);
+            return { isIncomplete: false, items: keywords.map(keyword => { return { label: keyword, kind: CompletionItemKind.Value }; }) };
         }
 
 
