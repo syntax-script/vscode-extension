@@ -6,7 +6,7 @@ type NotificationMethod = (message:RequestMessage) => void;
 const methodMap: Record<string, RequestMethod|NotificationMethod> = {
     'initialize': initialize,
     'textDocument/completion': completion,
-    'textDocuemnt/didChange': didChange
+    'textDocument/didChange': didChange
 };
 
 function respond(id: RequestMessage['id'], result: object|null) {

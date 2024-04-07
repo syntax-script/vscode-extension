@@ -14,7 +14,7 @@ export function initialize(message: RequestMessage): InitializeResult {
     return {
         capabilities:{
             completionProvider:{},
-            textDocumentSync:{}
+            textDocumentSync:1
         },
         serverInfo:{
             name:'syntax-script-lsp',
