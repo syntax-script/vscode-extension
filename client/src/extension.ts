@@ -31,8 +31,8 @@ export function activate(context: ExtensionContext) {
   };
 
   client = new LanguageClient(
-    "syntax-script",
-    "syntax script",
+    "syntax-script-lsp",
+    "Syntax Script Language Server",
     serverOptions,
     clientOptions
   );
