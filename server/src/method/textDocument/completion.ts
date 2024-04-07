@@ -16,8 +16,8 @@ interface CompletionItem {
     command?: Command;
     deprecated?: boolean;
     detail?: string;
-    filterText?:string;
-    sortText?:string;
+    filterText?: string;
+    sortText?: string;
 }
 
 export interface CompletionParams extends TextDocumentPositionParams { }
@@ -111,7 +111,7 @@ function ruleNames(curWord: string, quoteType: string, quoter: 'none' | 'end' | 
                 insertText: text(k),
                 command: { title: 'suggest', command: 'editor.action.triggerSuggest' },
                 textEdit: quoter === 'none' ? { range: { start: { line: pos.line, character: pos.character }, end: { line: pos.line, character: pos.character + k.name.length + 3 } }, newText: `${text(k)}${quoteType}:` } : undefined,
-                filterText:k.name,sortText:k.name
+                filterText: k.name, sortText: k.name
             } as CompletionItem;
         });
 
@@ -126,7 +126,8 @@ const regexes = {
     ruleDefinition: /^(export\s+)?rule\s+('|")([a-zA-Z\-]*)$/,
     ruleValue: /^(export\s+)?rule\s+(('[\u0000-\uffff]*'|"[\u0000-\uffff]*")):\s*$/,
     fullKeyword: /(export\s+)?keyword\s+[a-z]+/g,
-    ruleStart: /^(export\s+)?rule\s+$/
+    ruleStart: /^(export\s+)?rule\s+$/,
+    nameNeeder: /^(export\s+)?(function|keyword)\s+$/
 };
 
 export function completion(message: RequestMessage): CompletionList | null {
@@ -138,6 +139,7 @@ export function completion(message: RequestMessage): CompletionList | null {
     const lineAfterCursor = currentLine.slice(params.position.character);
     const curWord = lineBeforeCursor.replace(/.*\W(.*?)/, '$1');
 
+    if(regexes.nameNeeder.test(lineBeforeCursor)) return {isIncomplete:false,items:[]};
     if (regexes.ruleStart.test(lineBeforeCursor)) {
         return ruleNames(curWord, '"', 'both', params.position);
     }
