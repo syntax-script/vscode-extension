@@ -14,6 +14,10 @@ interface CompletionItem {
     details?: CompletionItemDetails;
     textEdit?: TextEdit;
     command?: Command;
+    deprecated?: boolean;
+    detail?: string;
+    filterText?:string;
+    sortText?:string;
 }
 
 export interface CompletionParams extends TextDocumentPositionParams { }
@@ -93,25 +97,26 @@ function keywords(curWord: string): CompletionList {
 
 }
 
-function ruleNames(curWord: string, quoteType: string, quoter: 'none' | 'end' | 'both',pos:Position): CompletionList {
-    function text(k:{name:string}){
+function ruleNames(curWord: string, quoteType: string, quoter: 'none' | 'end' | 'both', pos: Position): CompletionList {
+    function text(k: { name: string; }) {
         return `${quoter === 'both' ? quoteType : ''}${k.name}${quoter !== 'none' ? quoteType + ':' : ''}`;
     }
 
     const items = SyntaxScriptDictionary.Rule
-        .filter((rule) => curWord===''?rule:rule.name.startsWith(curWord))
+        .filter((rule) => curWord === '' ? rule : rule.name.startsWith(curWord))
         .slice(0, MAX_LENGTH)
         .map(k => {
             return {
                 label: k.name, kind: CompletionItemKind.Constant,
                 insertText: text(k),
                 command: { title: 'suggest', command: 'editor.action.triggerSuggest' },
-                textEdit: quoter==='none'? {range:{start:{line:pos.line,character:pos.character},end:{line:pos.line,character:pos.character+k.name.length+3}},newText:`${text(k)}${quoteType}:`} : undefined
+                textEdit: quoter === 'none' ? { range: { start: { line: pos.line, character: pos.character }, end: { line: pos.line, character: pos.character + k.name.length + 3 } }, newText: `${text(k)}${quoteType}:` } : undefined,
+                filterText:k.name,sortText:k.name
             } as CompletionItem;
         });
 
     return {
-        isIncomplete: items.length === MAX_LENGTH,
+        isIncomplete: true,
         items
     };
 }
@@ -133,13 +138,13 @@ export function completion(message: RequestMessage): CompletionList | null {
     const lineAfterCursor = currentLine.slice(params.position.character);
     const curWord = lineBeforeCursor.replace(/.*\W(.*?)/, '$1');
 
-    if(regexes.ruleStart.test(lineBeforeCursor)){
-        return ruleNames(curWord, '"','both',params.position);
+    if (regexes.ruleStart.test(lineBeforeCursor)) {
+        return ruleNames(curWord, '"', 'both', params.position);
     }
     if (regexes.ruleDefinition.test(lineBeforeCursor)) {
         const match = lineBeforeCursor.match(regexes.ruleDefinition);
-        if (!match) return ruleNames(curWord, '\'', 'none',params.position);
-        return ruleNames(curWord, match[2], lineAfterCursor.startsWith(match[2])?'none':'end',params.position);
+        if (!match) return ruleNames(curWord, '\'', 'none', params.position);
+        return ruleNames(curWord, match[2], lineAfterCursor.startsWith(match[2]) ? 'none' : 'end', params.position);
     }
     if (regexes.ruleValue.test(lineBeforeCursor)) {
         const match = lineBeforeCursor.match(regexes.ruleValue);
