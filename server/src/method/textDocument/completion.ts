@@ -98,12 +98,26 @@ function keywords(curWord: string): CompletionList {
 }
 
 
-function primitives(curWord: string,putEnd?:string): CompletionList {
+function primitives(curWord: string, putEnd?: string): CompletionList {
 
     const items = SyntaxScriptDictionary.PrimitiveType
         .filter((word) => word.startsWith(curWord))
         .slice(0, MAX_LENGTH)
-        .map(k => { return { label: k, kind: CompletionItemKind.Keyword,insertText:putEnd?`${k}${putEnd}`:k } as CompletionItem; });
+        .map(k => { return { label: k, kind: CompletionItemKind.Keyword, insertText: putEnd ? `${k}${putEnd}` : k } as CompletionItem; });
+
+    return {
+        isIncomplete: items.length === MAX_LENGTH,
+        items
+    };
+
+}
+
+function modifierFunctions(curWord: string): CompletionList {
+
+    const items = SyntaxScriptDictionary.Functionary
+        .filter((func) => func.name.startsWith(curWord))
+        .slice(0, MAX_LENGTH)
+        .map(func => { return { label: func.name, kind: CompletionItemKind.Function } as CompletionItem; });
 
     return {
         isIncomplete: items.length === MAX_LENGTH,
@@ -154,8 +168,9 @@ export function completion(message: RequestMessage): CompletionList | null {
     const lineAfterCursor = currentLine.slice(params.position.character);
     const curWord = lineBeforeCursor.replace(/.*\W(.*?)/, '$1');
 
-    if (/<[\u0000-\uffff]*$/.test(lineBeforeCursor)) return primitives(curWord,'>');
+    if (/<[\u0000-\uffff]*$/.test(lineBeforeCursor)) return primitives(curWord, '>');
     if (regexes.nameNeeder.test(lineBeforeCursor)) return { isIncomplete: false, items: [] };
+    //# Rules
     if (regexes.ruleStart.test(lineBeforeCursor)) {
         return ruleNames(curWord, '"', 'both', params.position);
     }
@@ -178,7 +193,8 @@ export function completion(message: RequestMessage): CompletionList | null {
 
 
     }
-
+    // # Inside operators / functions
+  
 
     return keywords(curWord);
 }
