@@ -97,6 +97,21 @@ function keywords(curWord: string): CompletionList {
 
 }
 
+
+function primitives(curWord: string,putEnd?:string): CompletionList {
+
+    const items = SyntaxScriptDictionary.PrimitiveType
+        .filter((word) => word.startsWith(curWord))
+        .slice(0, MAX_LENGTH)
+        .map(k => { return { label: k, kind: CompletionItemKind.Keyword,insertText:putEnd?`${k}${putEnd}`:k } as CompletionItem; });
+
+    return {
+        isIncomplete: items.length === MAX_LENGTH,
+        items
+    };
+
+}
+
 function ruleNames(curWord: string, quoteType: string, quoter: 'none' | 'end' | 'both', pos: Position): CompletionList {
     function text(k: { name: string; }) {
         return `${quoter === 'both' ? quoteType : ''}${k.name}${quoter !== 'none' ? quoteType + ':' : ''}`;
@@ -116,7 +131,7 @@ function ruleNames(curWord: string, quoteType: string, quoter: 'none' | 'end' | 
         });
 
     return {
-        isIncomplete: true,
+        isIncomplete: items.length === MAX_LENGTH,
         items
     };
 }
@@ -127,7 +142,7 @@ const regexes = {
     ruleValue: /^(export\s+)?rule\s+(('[\u0000-\uffff]*'|"[\u0000-\uffff]*")):\s*$/,
     fullKeyword: /(export\s+)?keyword\s+[a-z]+/g,
     ruleStart: /^(export\s+)?rule\s+$/,
-    nameNeeder: /^(export\s+)?(function|keyword)\s+$/
+    nameNeeder: /^(export\s+)?(function|keyword)\s+([\u0000-\uffff]\s+)?$/
 };
 
 export function completion(message: RequestMessage): CompletionList | null {
@@ -139,7 +154,8 @@ export function completion(message: RequestMessage): CompletionList | null {
     const lineAfterCursor = currentLine.slice(params.position.character);
     const curWord = lineBeforeCursor.replace(/.*\W(.*?)/, '$1');
 
-    if(regexes.nameNeeder.test(lineBeforeCursor)) return {isIncomplete:false,items:[]};
+    if (/<[\u0000-\uffff]*$/.test(lineBeforeCursor)) return primitives(curWord,'>');
+    if (regexes.nameNeeder.test(lineBeforeCursor)) return { isIncomplete: false, items: [] };
     if (regexes.ruleStart.test(lineBeforeCursor)) {
         return ruleNames(curWord, '"', 'both', params.position);
     }
