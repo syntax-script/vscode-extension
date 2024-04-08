@@ -1,6 +1,6 @@
 import SyntaxScriptDictionary from "../../dictionary";
 import { TextDocumentIdentifier, documents } from "../../documents";
-import { RequestMessage } from "../../types";
+import { Position, Range, RequestMessage } from "../../types";
 
 interface CompletionList {
     isIncomplete: boolean;
@@ -22,15 +22,6 @@ interface CompletionItem {
 
 export interface CompletionParams extends TextDocumentPositionParams { }
 
-interface Position {
-    line: number;
-    character: number;
-}
-
-interface Range {
-    start: Position;
-    end: Position;
-}
 
 interface TextEdit {
     range: Range;
@@ -168,6 +159,7 @@ export function completion(message: RequestMessage): CompletionList | null {
     const lineAfterCursor = currentLine.slice(params.position.character);
     const curWord = lineBeforeCursor.replace(/.*\W(.*?)/, '$1');
 
+
     if (/<[\u0000-\uffff]*$/.test(lineBeforeCursor)) return primitives(curWord, '>');
     if (regexes.nameNeeder.test(lineBeforeCursor)) return { isIncomplete: false, items: [] };
     //# Rules
@@ -193,8 +185,6 @@ export function completion(message: RequestMessage): CompletionList | null {
 
 
     }
-    // # Inside operators / functions
-  
 
     return keywords(curWord);
 }

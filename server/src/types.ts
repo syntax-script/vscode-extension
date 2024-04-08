@@ -13,3 +13,14 @@ export interface NotificationMessage extends Message {
 
 export type DocumentUri = string;
 export type DocuemntBody = string;
+
+
+export interface Position {
+    line: number;
+    character: number;
+}
+
+export interface Range {
+    start: Position;
+    end: Position;
+}

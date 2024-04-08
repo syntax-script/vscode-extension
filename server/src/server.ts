@@ -1,4 +1,5 @@
 import { completion, initialize, didChange } from "./method";
+import { diagnostic } from "./method/textDocument/diagnostic";
 import { RequestMessage } from "./types";
 
 type RequestMethod = (message: RequestMessage) => object;
@@ -6,7 +7,8 @@ type NotificationMethod = (message:RequestMessage) => void;
 const methodMap: Record<string, RequestMethod|NotificationMethod> = {
     'initialize': initialize,
     'textDocument/completion': completion,
-    'textDocument/didChange': didChange
+    'textDocument/didChange': didChange,
+    'textDocument/diagnostic': diagnostic
 };
 
 function respond(id: RequestMessage['id'], result: object|null) {
