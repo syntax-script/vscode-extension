@@ -26,5 +26,8 @@
   "devDependencies": {
     "@types/node": "^20.5.7",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@syntaxs/compiler": "file:../../syntaxScript/compiler/package/syntaxs-compiler-0.0.1-alpha.tgz"
   }
 }
