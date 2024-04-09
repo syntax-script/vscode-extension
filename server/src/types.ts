@@ -12,7 +12,7 @@ export interface NotificationMessage extends Message {
 }
 
 export type DocumentUri = string;
-export type DocuemntBody = string;
+export type DocumentBody = string;
 
 
 export interface Position {
