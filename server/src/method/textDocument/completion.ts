@@ -1,4 +1,4 @@
-import SyntaxScriptDictionary from "../../dictionary";
+import { dictionary } from "@syntaxs/compiler";
 import { TextDocumentIdentifier, documents } from "../../documents";
 import { Position, Range, RequestMessage } from "../../types";
 
@@ -76,7 +76,7 @@ const MAX_LENGTH = 100;
 
 function keywords(curWord: string): CompletionList {
 
-    const items = SyntaxScriptDictionary.Keyword
+    const items = dictionary.Keywords
         .filter((word) => word.startsWith(curWord))
         .slice(0, MAX_LENGTH)
         .map(k => { return { label: k, kind: CompletionItemKind.Keyword }; });
@@ -91,7 +91,7 @@ function keywords(curWord: string): CompletionList {
 
 function primitives(curWord: string, putEnd?: string): CompletionList {
 
-    const items = SyntaxScriptDictionary.PrimitiveType
+    const items = dictionary.PrimitiveTypes
         .filter((word) => word.startsWith(curWord))
         .slice(0, MAX_LENGTH)
         .map(k => { return { label: k, kind: CompletionItemKind.Keyword, insertText: putEnd ? `${k}${putEnd}` : k } as CompletionItem; });
@@ -105,7 +105,7 @@ function primitives(curWord: string, putEnd?: string): CompletionList {
 
 function modifierFunctions(curWord: string): CompletionList {
 
-    const items = SyntaxScriptDictionary.Functionary
+    const items = dictionary.Functionaries
         .filter((func) => func.name.startsWith(curWord))
         .slice(0, MAX_LENGTH)
         .map(func => { return { label: func.name, kind: CompletionItemKind.Function } as CompletionItem; });
@@ -122,7 +122,7 @@ function ruleNames(curWord: string, quoteType: string, quoter: 'none' | 'end' | 
         return `${quoter === 'both' ? quoteType : ''}${k.name}${quoter !== 'none' ? quoteType + ':' : ''}`;
     }
 
-    const items = SyntaxScriptDictionary.Rule
+    const items = dictionary.Rules
         .filter((rule) => curWord === '' ? rule : rule.name.startsWith(curWord))
         .slice(0, MAX_LENGTH)
         .map(k => {
@@ -175,7 +175,7 @@ export function completion(message: RequestMessage): CompletionList | null {
         const match = lineBeforeCursor.match(regexes.ruleValue);
         if (!match) return null;
         const ruleName = match[3].slice(1, match[3].length - 1);
-        const rule = SyntaxScriptDictionary.Rule.find(r => r.name === ruleName);
+        const rule = dictionary.Rules.find(r => r.name === ruleName);
         if (!rule) return null;
         if (rule.type === 'boolean') return { isIncomplete: false, items: [{ label: 'true', kind: CompletionItemKind.Keyword }, { label: 'false', kind: CompletionItemKind.Keyword }] };
         if (rule.type === 'keyword') {
