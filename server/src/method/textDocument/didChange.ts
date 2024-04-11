@@ -1,5 +1,5 @@
-import { VersionedTextDocuemntIdentifier, documents } from "../../documents";
-import { NotificationMessage } from "../../types";
+import { NotificationMessage, VersionedTextDocumentIdentifier } from "lsp-types";
+import { documents } from "../../documents";
 
 
 interface TextDocumentContentChangeEvent {
@@ -7,7 +7,7 @@ interface TextDocumentContentChangeEvent {
 }
 
 interface DidChangeTextDocumentParams {
-    textDocument: VersionedTextDocuemntIdentifier;
+    textDocument: VersionedTextDocumentIdentifier;
     contentChanges:TextDocumentContentChangeEvent[];
 }
 

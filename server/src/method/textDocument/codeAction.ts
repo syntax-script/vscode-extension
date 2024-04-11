@@ -1,50 +1,20 @@
-import { Diagnostic, DocumentUri, Range } from "@syntaxs/compiler";
-import { RequestMessage } from "../../types";
-import { TextEdit } from "./completion";
-import { TextDocumentIdentifier } from "../../documents";
-
-interface CodeAction {
-    title: string;
-    kind?: CodeActionKind;
-    isPreferred?: boolean;
-    edit?: WorkspaceEdit;
-    data?: unknown;
-}
-
-interface CodeActionParams {
-    textDocument: TextDocumentIdentifier;
-    range: Range;
-    context: CodeActionContext;
-}
-
-interface CodeActionContext {
-    diagnostics: Diagnostic[];
-}
-
-enum CodeActionKind {
-    Empty = '',
-    QuickFix = 'quickfix',
-    Refactor = 'refactor'
-}
-
-interface WorkspaceEdit {
-    changes?: Record<DocumentUri, TextEdit[]>;
-}
+import { CodeAction, CodeActionParams, Range, RequestMessage } from "lsp-types";
 
 export function codeAction(message: RequestMessage): CodeAction[] {
     const params = message.params as CodeActionParams;
 
     // TODO
 
-    return [
-        {
-            title: 'TODO',
-            kind: CodeActionKind.QuickFix,
-            edit: {
-                changes: {
-                    [params.textDocument.uri]: []
-                }
-            }
-        }
-    ];
+    const diagnostic = params.context.diagnostics.find(r=>isIn(r.range,params.range));
+
+    return diagnostic?diagnostic.data as CodeAction[] : [];
+}
+
+function isIn(range1:Range,range2:Range):boolean {
+    return (
+        range2.start.line >= range1.start.line &&
+        range2.start.character >= range1.start.character &&
+        range2.end.line <= range1.end.line &&
+        range2.end.character <= range1.end.character
+    )
 }

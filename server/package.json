@@ -12,6 +12,7 @@
     "url": "https://github.com/efekos/syntax-script "
   },
   "dependencies": {
-    "@syntaxs/compiler": "file:../../../syntaxScript/compiler/syntaxs-compiler-0.0.1-alpha.tgz"
+    "@syntaxs/compiler": "file:../../../syntaxScript/compiler/syntaxs-compiler-0.0.1-alpha.tgz",
+    "lsp-types": "^3.17.0-f3"
   }
 }

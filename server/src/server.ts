@@ -1,8 +1,8 @@
+import { RequestMessage } from "lsp-types";
 import { completion, initialize, didChange } from "./method";
 import { codeAction } from "./method/textDocument/codeAction";
 import { diagnostic } from "./method/textDocument/diagnostic";
 import { didOpen } from "./method/textDocument/didOpen";
-import { RequestMessage } from "./types";
 
 type RequestMethod = (message: RequestMessage) => object;
 type NotificationMethod = (message:RequestMessage) => void;

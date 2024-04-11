@@ -1,15 +1,11 @@
-import { DiagnosticSeverity, DocumentDiagnosticReportKind, FullDocumentDiagnosticReport, createSyntaxScriptDiagnosticReport } from "@syntaxs/compiler";
-import { TextDocumentIdentifier, documents } from "../../documents";
-import { RequestMessage } from "../../types";
+import { createSyntaxScriptDiagnosticReport } from "@syntaxs/compiler";
+import { documents } from "../../documents";
+import { DiagnosticSeverity, DocumentDiagnosticParams, DocumentDiagnosticReportKind, FullDocumentDiagnosticReport, RequestMessage } from "lsp-types";
 
-
-interface DiagnosticParams {
-    textDocument: TextDocumentIdentifier;
-}
 
 export function diagnostic(message: RequestMessage): FullDocumentDiagnosticReport | null {
 
-    const params = message.params as DiagnosticParams;
+    const params = message.params as DocumentDiagnosticParams;
     const content = documents.get(params.textDocument.uri);
     if (!content) return {kind:DocumentDiagnosticReportKind.Full,items:[]};
 

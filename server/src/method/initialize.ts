@@ -1,13 +1,5 @@
-import { RequestMessage } from "../types";
+import { InitializeResult, RequestMessage } from "lsp-types";
 
-export interface InitializeResult {
-    capabilities: ServerCapabilities;
-    serverInfo?: {
-        name: string;
-        version?: string;
-    };
-}
-export type ServerCapabilities = Record<string, unknown>;
 
 export function initialize(message: RequestMessage): InitializeResult {
 

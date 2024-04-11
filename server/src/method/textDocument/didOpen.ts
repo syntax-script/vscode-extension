@@ -1,6 +1,5 @@
-import { DocumentUri } from "@syntaxs/compiler";
+import { DocumentUri, RequestMessage } from "lsp-types";
 import { documents } from "../../documents";
-import { RequestMessage } from "../../types";
 
 interface DidOpenParams {
     textDocument:TextDocumentItem;

@@ -1,76 +1,6 @@
-import { dictionary, Position, Range } from "@syntaxs/compiler";
-import { TextDocumentIdentifier, documents } from "../../documents";
-import { RequestMessage } from "../../types";
-
-interface CompletionList {
-    isIncomplete: boolean;
-    items: CompletionItem[];
-}
-
-interface CompletionItem {
-    label: string;
-    kind?: CompletionItemKind;
-    insertText?: string;
-    details?: CompletionItemDetails;
-    textEdit?: TextEdit;
-    command?: Command;
-    deprecated?: boolean;
-    detail?: string;
-    filterText?: string;
-    sortText?: string;
-}
-
-export interface CompletionParams extends TextDocumentPositionParams { }
-
-
-export interface TextEdit {
-    range: Range;
-    newText: string;
-}
-
-interface TextDocumentPositionParams {
-    textDocument: TextDocumentIdentifier;
-    position: Position;
-}
-
-interface CompletionItemDetails {
-    detail?: string;
-    description?: string;
-}
-
-enum CompletionItemKind {
-    Text = 1,
-    Method = 2,
-    Function = 3,
-    Constructor = 4,
-    Field = 5,
-    Variable = 6,
-    Class = 7,
-    Interface = 8,
-    Module = 9,
-    Property = 10,
-    Unit = 11,
-    Value = 12,
-    Enum = 13,
-    Keyword = 14,
-    Snippet = 15,
-    Color = 16,
-    File = 17,
-    Reference = 18,
-    Folder = 19,
-    EnumMember = 20,
-    Constant = 21,
-    Struct = 22,
-    Event = 23,
-    Operator = 24,
-    TypeParameter = 25
-}
-
-interface Command {
-    title: string;
-    command: string;
-    arguments?: any;
-}
+import { dictionary } from "@syntaxs/compiler";
+import { documents } from "../../documents";
+import { CompletionItem, CompletionItemKind, CompletionList, CompletionParams, Position, RequestMessage } from "lsp-types";
 
 const MAX_LENGTH = 100;
 
@@ -79,7 +9,7 @@ function keywords(curWord: string): CompletionList {
     const items = dictionary.Keywords
         .filter((word) => word.startsWith(curWord))
         .slice(0, MAX_LENGTH)
-        .map(k => { return { label: k, kind: CompletionItemKind.Keyword }; });
+        .map(k => { return { label: k, kind: CompletionItemKind.Keyword as CompletionItemKind }; });
 
     return {
         isIncomplete: items.length === MAX_LENGTH,

@@ -1,14 +1,3 @@
-import { DocumentUri } from "@syntaxs/compiler";
-import { DocumentBody } from "./types";
+import { DocumentUri } from "lsp-types";
 
-
-export const documents = new Map<DocumentUri,DocumentBody>();
-
-
-export interface VersionedTextDocuemntIdentifier extends TextDocumentIdentifier{
-    version:number;
-}
-
-export interface TextDocumentIdentifier {
-    uri: DocumentUri;
-}
+export const documents = new Map<DocumentUri,string>();
