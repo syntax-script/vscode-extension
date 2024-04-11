@@ -1,4 +1,5 @@
-import { DocumentBody, DocumentUri } from "./types";
+import { DocumentUri } from "@syntaxs/compiler";
+import { DocumentBody } from "./types";
 
 
 export const documents = new Map<DocumentUri,DocumentBody>();

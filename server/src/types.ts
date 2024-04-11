@@ -11,16 +11,4 @@ export interface NotificationMessage extends Message {
     params?:unknown[]|object;
 }
 
-export type DocumentUri = string;
 export type DocumentBody = string;
-
-
-export interface Position {
-    line: number;
-    character: number;
-}
-
-export interface Range {
-    start: Position;
-    end: Position;
-}

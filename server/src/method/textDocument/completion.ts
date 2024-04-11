@@ -1,6 +1,6 @@
-import { dictionary } from "@syntaxs/compiler";
+import { dictionary, Position, Range } from "@syntaxs/compiler";
 import { TextDocumentIdentifier, documents } from "../../documents";
-import { Position, Range, RequestMessage } from "../../types";
+import { RequestMessage } from "../../types";
 
 interface CompletionList {
     isIncomplete: boolean;
@@ -23,9 +23,9 @@ interface CompletionItem {
 export interface CompletionParams extends TextDocumentPositionParams { }
 
 
-interface TextEdit {
+export interface TextEdit {
     range: Range;
-    newText: TextEdit;
+    newText: string;
 }
 
 interface TextDocumentPositionParams {
