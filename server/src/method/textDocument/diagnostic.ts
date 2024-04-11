@@ -11,7 +11,7 @@ export function diagnostic(message: RequestMessage): FullDocumentDiagnosticRepor
 
     const params = message.params as DiagnosticParams;
     const content = documents.get(params.textDocument.uri);
-    if (!content) return null;
+    if (!content) return {kind:DocumentDiagnosticReportKind.Full,items:[]};
 
     const report = createSyntaxScriptDiagnosticReport(params.textDocument.uri,content);
 
