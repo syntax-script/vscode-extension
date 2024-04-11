@@ -1,5 +1,5 @@
 import { VersionedTextDocuemntIdentifier, documents } from "../../documents";
-import { DocumentUri, NotificationMessage, RequestMessage } from "../../types";
+import { NotificationMessage } from "../../types";
 
 
 interface TextDocumentContentChangeEvent {
