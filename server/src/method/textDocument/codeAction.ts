@@ -3,8 +3,6 @@ import { CodeAction, CodeActionParams, Range, RequestMessage } from "lsp-types";
 export function codeAction(message: RequestMessage): CodeAction[] {
     const params = message.params as CodeActionParams;
 
-    // TODO
-
     const diagnostic = params.context.diagnostics.find(r=>isIn(r.range,params.range));
 
     return diagnostic?diagnostic.data as CodeAction[] : [];
