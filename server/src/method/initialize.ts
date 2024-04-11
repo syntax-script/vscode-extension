@@ -15,7 +15,8 @@ export function initialize(message: RequestMessage): InitializeResult {
         capabilities:{
             completionProvider:{},
             textDocumentSync:1,
-            diagnosticProvider:{workspaceDiagnostics:true,interFileDependencies:true,identifier:'syntax-script'}
+            diagnosticProvider:{workspaceDiagnostics:true,interFileDependencies:true,identifier:'syntax-script'},
+            codeActionProvider:true
         },
         serverInfo:{
             name:'syntax-script-lsp',
