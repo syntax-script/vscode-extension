@@ -110,7 +110,7 @@ export function completion(message: RequestMessage): CompletionList | null {
         if (rule.type === 'boolean') return { isIncomplete: false, items: [{ label: 'true', kind: CompletionItemKind.Keyword }, { label: 'false', kind: CompletionItemKind.Keyword }] };
         if (rule.type === 'keyword') {
             const keywords = (content.match(regexes.fullKeyword) ?? []).map(r => r.split(/\s+/)[r.startsWith('export') ? 2 : 1]);
-            return { isIncomplete: false, items: keywords.map(keyword => { return { label: keyword, kind: CompletionItemKind.Value }; }) };
+            return { isIncomplete: keywords.length === MAX_LENGTH, items: keywords.map(keyword => { return { label: keyword, kind: CompletionItemKind.Variable }; }) };
         }
 
 
