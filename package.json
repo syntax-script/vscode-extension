@@ -5,7 +5,9 @@
   "license": "MIT",
   "version": "1.0.0",
   "publisher": "efekos",
-  "categories": [],
+  "categories": [
+    "Snippets","Programming Languages","Formatters"
+  ],
   "engines": {
     "vscode": "^1.75.0"
   },
