@@ -24,10 +24,10 @@
     "postinstall": "cd client && npm install && cd ../server && npm install && cd .."
   },
   "devDependencies": {
-    "@types/node": "^20.5.7",
-    "typescript": "^5.2.2"
+    "@types/node": "^20.12.7",
+    "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@syntaxs/compiler": "file:../../syntaxScript/compiler/package/syntaxs-compiler-0.0.1-alpha.tgz"
+    "@syntaxs/compiler": "file:../../syntaxScript/compiler/package/syntaxs-compiler-0.0.2-alpha.tgz"
   }
 }
