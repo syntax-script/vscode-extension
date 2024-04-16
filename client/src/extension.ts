@@ -1,5 +1,5 @@
 import * as path from "path";
-import { workspace, ExtensionContext } from "vscode";
+import { workspace, ExtensionContext, window, commands } from "vscode";
 
 import {
   LanguageClient,
@@ -11,6 +11,12 @@ import {
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
+
+
+  context.subscriptions.push(
+    commands.registerCommand('syntaxs.reload', () => { client.restart().then(() => window.showInformationMessage('Succesfully reloaded language server!')).catch((e) => window.showErrorMessage(`Could not reload language server: ${e}`)); })
+  );
+
   const serverModule = context.asAbsolutePath(
     path.join("server", "out", "server.js")
   );

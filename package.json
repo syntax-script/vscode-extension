@@ -11,11 +11,22 @@
   },
   "activationEvents": [
     "onLanguage:syx",
-    "onLanguage:sys"
+    "onLanguage:sys",
+    "onStartupFinished"
   ],
   "main": "./client/out/extension",
   "contributes": {
-    "configuration": {}
+    "configuration": {},
+    "commands":[
+      {
+        "command": "syntaxs.reload",
+        "title": "Reload Language Server",
+        "enablement": "true",
+        "category": "Syntax Script",
+        "shortTitle": "Reload Language Server",
+        "icon":"$(reload)"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
