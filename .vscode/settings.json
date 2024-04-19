@@ -2,7 +2,6 @@
     "files.exclude": {
         "**/node_modules": true,
         "**/out": true,
-        "**/package-lock.json": true,
-        "**/tsconfig.json": true
+        "**/package-lock.json": true
     }
 }

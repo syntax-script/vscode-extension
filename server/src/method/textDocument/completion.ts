@@ -1,5 +1,5 @@
 import { dictionary } from "@syntaxs/compiler";
-import { documents } from "../../documents";
+import { documents } from "../../documents.js";
 import { CompletionItem, CompletionItemKind, CompletionList, CompletionParams, Position, RequestMessage } from "lsp-types";
 
 const MAX_LENGTH = 100;

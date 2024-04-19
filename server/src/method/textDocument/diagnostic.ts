@@ -1,5 +1,5 @@
 import { createSyntaxScriptDiagnosticReport } from "@syntaxs/compiler";
-import { documents } from "../../documents";
+import { documents } from "../../documents.js";
 import { DiagnosticSeverity, DocumentDiagnosticParams, DocumentDiagnosticReportKind, FullDocumentDiagnosticReport, RequestMessage } from "lsp-types";
 
 
