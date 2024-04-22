@@ -8,7 +8,8 @@ export function initialize(message: RequestMessage): InitializeResult {
             completionProvider:{},
             textDocumentSync:1,
             diagnosticProvider:{workspaceDiagnostics:true,interFileDependencies:true,identifier:'syntax-script'},
-            codeActionProvider:true
+            codeActionProvider:true,
+            hoverProvider:true
         },
         serverInfo:{
             name:'syntax-script-lsp',

@@ -7,3 +7,4 @@ export * from './textDocument/diagnostic.js';
 export * from './textDocument/didOpen.js';
 export * from './exit.js';
 export * from './shutdown.js';
+export * from './textDocument/hover.js';
