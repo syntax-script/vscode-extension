@@ -5,3 +5,5 @@ export * from './textDocument/codeAction.js';
 export * from './textDocument/completion.js';
 export * from './textDocument/diagnostic.js';
 export * from './textDocument/didOpen.js';
+export * from './exit.js';
+export * from './shutdown.js';
