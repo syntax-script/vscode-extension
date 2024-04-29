@@ -1,6 +1,7 @@
 import { ErrorCodes, RequestMessage, ResponseError } from "lsp-types";
 import { completion, initialize, didChange,codeAction,diagnostic,didOpen, exit, shutdown, hover} from "./method/index.js";
 import { ReceivedShutdown } from "./documents.js";
+import { documentSymbol } from "./method/textDocument/documentSymbol.js";
 
 type RequestMethod = (message: RequestMessage) => object;
 type NotificationMethod = (message:RequestMessage) => void;
@@ -13,6 +14,7 @@ const methodMap: Record<string, RequestMethod|NotificationMethod> = {
     'textDocument/didOpen': didOpen,
     'textDocument/diagnostic': diagnostic,
     'textDocument/codeAction': codeAction,
+    'textDocument/documentSymbol': documentSymbol,
     'textDocument/hover': hover
 };
 const methodsThatAreRequest = [/textDocument\/[a-zA-Z]+/]

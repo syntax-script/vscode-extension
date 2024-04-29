@@ -9,7 +9,8 @@ export function initialize(message: RequestMessage): InitializeResult {
             textDocumentSync:1,
             diagnosticProvider:{workspaceDiagnostics:true,interFileDependencies:true,identifier:'syntax-script'},
             codeActionProvider:true,
-            hoverProvider:true
+            hoverProvider:true,
+            documentSymbolProvider:{label:'syntax-script'}
         },
         serverInfo:{
             name:'syntax-script-lsp',
