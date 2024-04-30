@@ -18,7 +18,7 @@ export function documentSymbol(message:RequestMessage):DocumentSymbol[]{
             if(t.type===TokenType.KeywordKeyword){
                 const next = a[i+1];
                 const b = next&&next.type===TokenType.Identifier;
-                symbols.push({kind:SymbolKind.Variable,name:b?next.value:'Keyword definition',detail:b?'keyword':undefined,range:b?subRange(syxparser.combineTwo(t,next)):subRange(t.range),selectionRange:subRange(t.range)});
+                symbols.push({kind:SymbolKind.Variable,name:b?next.value:'Keyword',detail:b?'keyword':undefined,range:b?subRange(syxparser.combineTwo(t,next)):subRange(t.range),selectionRange:subRange(t.range)});
             }
 
             if(t.type===TokenType.RuleKeyword){
@@ -27,16 +27,29 @@ export function documentSymbol(message:RequestMessage):DocumentSymbol[]{
                 let j = i;
                 if(tokens[j+1]&&tokens[j+1].type===TokenType.SingleQuote){
                     j+=2;
-                    while(tokens.length>j&&tokens[j]&&tokens[j].type!==TokenType.SingleQuote) ruleName += tokens[++j].value;
+                    while(tokens.length>j&&tokens[j]&&tokens[j].type!==TokenType.SingleQuote) ruleName += tokens[j++].value;
                     
                 }
 
                 if(tokens[j+1]&&tokens[j+1].type===TokenType.DoubleQuote){
                     j+=2;
-                    while(tokens.length>j&&tokens[j]&&tokens[j].type!==TokenType.DoubleQuote) ruleName += tokens[++j].value;
+                    while(tokens.length>j&&tokens[j]&&tokens[j].type!==TokenType.DoubleQuote) ruleName += tokens[j++].value;
                 }
 
-                symbols.push({kind:SymbolKind.Field,name:ruleName||'rule',range:subRange(t.range),selectionRange:subRange(t.range)})
+                symbols.push({kind:SymbolKind.Field,name:ruleName||'Rule',range:subRange(t.range),selectionRange:subRange(t.range)})
+            }
+
+            if(t.type===TokenType.GlobalKeyword){
+                const next = a[i+1];
+                const b = next&&next.type===TokenType.Identifier;
+                symbols.push({kind:SymbolKind.Namespace,name:b?next.value:'Global',detail:b?'global':undefined,range:b?subRange(syxparser.combineTwo(t,next)):subRange(t.range),selectionRange:subRange(t.range)});
+                //TODO children
+            }
+
+            if(t.type===TokenType.FunctionKeyword){
+                const next = a[i+1];
+                const b = next&&next.type===TokenType.Identifier;
+                symbols.push({kind:SymbolKind.Function,name:b?next.value:'Function',detail:b?'function':undefined,range:b?subRange(syxparser.combineTwo(t,next)):subRange(t.range),selectionRange:subRange(t.range)});
             }
 
         });
