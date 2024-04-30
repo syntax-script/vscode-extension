@@ -23,7 +23,7 @@ export function hover(message: RequestMessage): Hover | null {
         const ruleName = (beforeMatch[0].trim() + afterMatch[0].trim()).replace(/^rule\s+/, '').slice(1, -1);
         const rule = dictionary.Rules.find(r => r.name === ruleName);
         if (rule === undefined) return null;
-        return { contents: `### ${ruleName}\n\n${rule.description}` };
+        return { contents: `# ${ruleName}\n${rule.conflicts.length>0?`**Conflicts with: ${rule.conflicts.join(',')}**\n\n`:''}\n${rule.description}` };
 
     }
 
