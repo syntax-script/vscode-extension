@@ -10,7 +10,7 @@ const regexes = {
 export function hover(message: RequestMessage): Hover | null {
     const params = message.params as HoverParams;
     const content = documents.get(params.textDocument.uri);
-    if (content === undefined) return { contents: 'no-content' };
+    if (content === undefined) return null;
     const currentLine = content.split('\n')[params.position.line];
     const lineBeforeCursor = currentLine.slice(0, params.position.character);
     const lineAfterCursor = currentLine.slice(params.position.character);
