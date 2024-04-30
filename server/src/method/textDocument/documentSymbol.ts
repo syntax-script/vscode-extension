@@ -1,6 +1,6 @@
 import { DocumentSymbol, DocumentSymbolParams, Range, RequestMessage, SymbolKind } from 'lsp-types';
-import { documents } from '../../documents.js';
 import { TokenType, subRange, syxparser, tokenizeSyx } from '@syntaxs/compiler';
+import { documents } from '../../documents.js';
 
 export function documentSymbol(message: RequestMessage): DocumentSymbol[] {
     const params = message.params as DocumentSymbolParams;
