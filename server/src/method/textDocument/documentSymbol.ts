@@ -65,6 +65,14 @@ export function documentSymbol(message: RequestMessage): DocumentSymbol[] {
                 symbols.push({ kind: SymbolKind.Operator, name: name || 'Operator', detail: name ? 'operator' : undefined, range: name ? subRange(syxparser.combineTwo(t, lastRange)) : subRange(t.range), selectionRange: subRange(t.range) });
             }
 
+            if (t.type === TokenType.CompileKeyword) symbols.push({ kind: SymbolKind.Function, name: 'compile', range: subRange(t.range), selectionRange: subRange(t.range) });
+            if (t.type === TokenType.ImportsKeyword) symbols.push({ kind: SymbolKind.Function, name: 'compile', range: subRange(t.range), selectionRange: subRange(t.range) });
+            if (t.type === TokenType.ClassKeyword) {
+                const next = a[i + 1];
+                const b = next && next.type === TokenType.Identifier;
+                symbols.push({ kind: SymbolKind.Class, name: b ? next.value : 'Class', detail: b ? 'class' : undefined, range: b ? subRange(syxparser.combineTwo(t, next)) : subRange(t.range), selectionRange: subRange(t.range) });
+                //TODO children
+            }
         });
 
         return symbols;
