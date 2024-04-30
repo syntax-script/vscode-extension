@@ -21,26 +21,22 @@ export function documentSymbol(message:RequestMessage):DocumentSymbol[]{
                 symbols.push({kind:SymbolKind.Variable,name:b?next.value:'Keyword definition',detail:b?'keyword':undefined,range:b?subRange(syxparser.combineTwo(t,next)):subRange(t.range),selectionRange:subRange(t.range)});
             }
 
-            //TODO make it actually work
             if(t.type===TokenType.RuleKeyword){
 
                 let ruleName = '';
                 let j = i;
-                if(a[j+1]&&a[j+1].type===TokenType.SingleQuote){
-                    j++;
-                    while(a.length>=j&&a[j]&&a[j].type!==TokenType.SingleQuote) {
-                        ruleName += a[++j].value
-                    };
+                if(tokens[j+1]&&tokens[j+1].type===TokenType.SingleQuote){
+                    j+=2;
+                    while(tokens.length>j&&tokens[j]&&tokens[j].type!==TokenType.SingleQuote) ruleName += tokens[++j].value;
+                    
                 }
 
-                if(a[j+1]&&a[j+1].type===TokenType.DoubleQuote){
-                    j++;
-                    while(a.length>=j&&a[j]&&a[j].type!==TokenType.DoubleQuote) {
-                        ruleName += a[++j].value
-                    };
+                if(tokens[j+1]&&tokens[j+1].type===TokenType.DoubleQuote){
+                    j+=2;
+                    while(tokens.length>j&&tokens[j]&&tokens[j].type!==TokenType.DoubleQuote) ruleName += tokens[++j].value;
                 }
 
-                symbols.push({kind:SymbolKind.Field,name:ruleName||'Rule definition',detail:ruleName,range:subRange(t.range),selectionRange:subRange(t.range)})
+                symbols.push({kind:SymbolKind.Field,name:ruleName||'rule',range:subRange(t.range),selectionRange:subRange(t.range)})
             }
 
         });
