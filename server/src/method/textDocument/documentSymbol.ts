@@ -1,4 +1,4 @@
-import { DocumentSymbol, DocumentSymbolParams, RequestMessage, SymbolKind } from "lsp-types";
+import { DocumentSymbol, DocumentSymbolParams, Range, RequestMessage, SymbolKind } from "lsp-types";
 import { documents } from "../../documents.js";
 import { TokenType, subRange, syxparser, tokenizeSyx } from "@syntaxs/compiler";
 
@@ -18,7 +18,7 @@ export function documentSymbol(message:RequestMessage):DocumentSymbol[]{
             if(t.type===TokenType.KeywordKeyword){
                 const next = a[i+1];
                 const b = next&&next.type===TokenType.Identifier;
-                symbols.push({kind:SymbolKind.Variable,name:b?next.value:'Keyword',detail:b?'keyword':undefined,range:b?subRange(syxparser.combineTwo(t,next)):subRange(t.range),selectionRange:subRange(t.range)});
+                symbols.push({kind:SymbolKind.Constant,name:b?next.value:'Keyword',detail:b?'keyword':undefined,range:b?subRange(syxparser.combineTwo(t,next)):subRange(t.range),selectionRange:subRange(t.range)});
             }
 
             if(t.type===TokenType.RuleKeyword){
@@ -51,6 +51,19 @@ export function documentSymbol(message:RequestMessage):DocumentSymbol[]{
                 const b = next&&next.type===TokenType.Identifier;
                 symbols.push({kind:SymbolKind.Function,name:b?next.value:'Function',detail:b?'function':undefined,range:b?subRange(syxparser.combineTwo(t,next)):subRange(t.range),selectionRange:subRange(t.range)});
             }
+
+            if(t.type===TokenType.OperatorKeyword) {
+                let j = i;
+                let name = '';
+                let lastRange:Range = {end:{character:1,line:1},start:{line:1,character:1}};
+                
+                j++;
+                while(tokens.length>j&&tokens[j]&&tokens[j].type!==TokenType.OpenBrace) name += tokens[j++].value;
+                lastRange = tokens[j].range;
+                
+
+                symbols.push({kind:SymbolKind.Operator,name:name||'Operator',detail:name?'operator':undefined,range:name?subRange(syxparser.combineTwo(t,lastRange)):subRange(t.range),selectionRange:subRange(t.range)})
+             }
 
         });
 
