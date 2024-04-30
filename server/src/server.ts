@@ -1,6 +1,6 @@
-import { ErrorCodes, RequestMessage } from "lsp-types";
-import { completion, initialize, didChange, codeAction, diagnostic, didOpen, exit, shutdown, hover, documentSymbol } from "./method/index.js";
-import { ReceivedShutdown } from "./documents.js";
+import { ErrorCodes, RequestMessage } from 'lsp-types';
+import { codeAction, completion, diagnostic, didChange, didOpen, documentSymbol, exit, hover, initialize, shutdown } from './method/index.js';
+import { ReceivedShutdown } from './documents.js';
 
 type RequestMethod = (message: RequestMessage) => object;
 type NotificationMethod = (message: RequestMessage) => void;
@@ -19,7 +19,7 @@ const methodMap: Record<string, RequestMethod | NotificationMethod> = {
 const methodsThatAreRequest = [/textDocument\/[a-zA-Z]+/];
 
 function respond(id: RequestMessage['id'], result: object | null) {
-    if (result == null) return;
+    if (result === null) return;
     const message = JSON.stringify({ id, result });
     const header = `Content-Length: ${Buffer.byteLength(message, 'utf8')}\r\n\r\n`;
 

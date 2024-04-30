@@ -1,4 +1,4 @@
-import { DocumentUri } from "lsp-types";
+import { DocumentUri } from 'lsp-types';
 
 interface GetSetProp<T> {
     get: () => T;
@@ -12,5 +12,5 @@ export const ReceivedShutdown: GetSetProp<boolean> = {
     get: () => receivedShutdown,
     set(v) {
         receivedShutdown = v || receivedShutdown;
-    },
+    }
 };

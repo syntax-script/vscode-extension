@@ -1,6 +1,6 @@
-import { createSyntaxScriptDiagnosticReport } from "@syntaxs/compiler";
-import { documents } from "../../documents.js";
-import { DiagnosticSeverity, DocumentDiagnosticParams, DocumentDiagnosticReportKind, FullDocumentDiagnosticReport, RequestMessage } from "lsp-types";
+import { createSyntaxScriptDiagnosticReport } from '@syntaxs/compiler';
+import { documents } from '../../documents.js';
+import { DiagnosticSeverity, DocumentDiagnosticParams, DocumentDiagnosticReportKind, FullDocumentDiagnosticReport, RequestMessage } from 'lsp-types';
 
 
 export function diagnostic(message: RequestMessage): FullDocumentDiagnosticReport | null {

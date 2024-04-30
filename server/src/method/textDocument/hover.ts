@@ -1,6 +1,6 @@
-import { Hover, HoverParams, RequestMessage } from "lsp-types";
-import { documents } from "../../documents.js";
-import { dictionary } from "@syntaxs/compiler";
+import { Hover, HoverParams, RequestMessage } from 'lsp-types';
+import { documents } from '../../documents.js';
+import { dictionary } from '@syntaxs/compiler';
 
 const regexes = {
     beforeRule: /rule\s+("|')[a-z\-]+$/,

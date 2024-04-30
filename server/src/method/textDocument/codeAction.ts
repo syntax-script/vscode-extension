@@ -1,4 +1,4 @@
-import { CodeAction, CodeActionParams, Range, RequestMessage } from "lsp-types";
+import { CodeAction, CodeActionParams, Range, RequestMessage } from 'lsp-types';
 
 export function codeAction(message: RequestMessage): CodeAction[] {
     const params = message.params as CodeActionParams;

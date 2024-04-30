@@ -1,5 +1,5 @@
-import { NotificationMessage, VersionedTextDocumentIdentifier } from "lsp-types";
-import { documents } from "../../documents.js";
+import { NotificationMessage, VersionedTextDocumentIdentifier } from 'lsp-types';
+import { documents } from '../../documents.js';
 
 
 interface TextDocumentContentChangeEvent {

@@ -1,4 +1,4 @@
-import { InitializeResult, RequestMessage } from "lsp-types";
+import { InitializeResult, RequestMessage } from 'lsp-types';
 
 
 export function initialize(message: RequestMessage): InitializeResult {
