@@ -7,9 +7,9 @@ export function diagnostic(message: RequestMessage): FullDocumentDiagnosticRepor
 
     const params = message.params as DocumentDiagnosticParams;
     const content = documents.get(params.textDocument.uri);
-    if (!content) return {kind:DocumentDiagnosticReportKind.Full,items:[]};
+    if (!content) return { kind: DocumentDiagnosticReportKind.Full, items: [] };
 
-    const report = createSyntaxScriptDiagnosticReport(params.textDocument.uri,content);
+    const report = createSyntaxScriptDiagnosticReport(params.textDocument.uri, content);
 
-    return {kind:DocumentDiagnosticReportKind.Full,items:report?report.items:[{message:'No report',range:{end:{character:0,line:1},start:{character:0,line:0}},severity:DiagnosticSeverity.Warning}]};
+    return { kind: DocumentDiagnosticReportKind.Full, items: report ? report.items : [{ message: 'No report', range: { end: { character: 0, line: 1 }, start: { character: 0, line: 0 } }, severity: DiagnosticSeverity.Warning }] };
 }

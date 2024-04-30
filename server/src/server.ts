@@ -1,14 +1,13 @@
-import { ErrorCodes, RequestMessage, ResponseError } from "lsp-types";
-import { completion, initialize, didChange,codeAction,diagnostic,didOpen, exit, shutdown, hover} from "./method/index.js";
+import { ErrorCodes, RequestMessage } from "lsp-types";
+import { completion, initialize, didChange, codeAction, diagnostic, didOpen, exit, shutdown, hover, documentSymbol } from "./method/index.js";
 import { ReceivedShutdown } from "./documents.js";
-import { documentSymbol } from "./method/textDocument/documentSymbol.js";
 
 type RequestMethod = (message: RequestMessage) => object;
-type NotificationMethod = (message:RequestMessage) => void;
-const methodMap: Record<string, RequestMethod|NotificationMethod> = {
+type NotificationMethod = (message: RequestMessage) => void;
+const methodMap: Record<string, RequestMethod | NotificationMethod> = {
     'initialize': initialize,
-    'exit':exit,
-    'shutdown':shutdown,
+    'exit': exit,
+    'shutdown': shutdown,
     'textDocument/completion': completion,
     'textDocument/didChange': didChange,
     'textDocument/didOpen': didOpen,
@@ -17,10 +16,10 @@ const methodMap: Record<string, RequestMethod|NotificationMethod> = {
     'textDocument/documentSymbol': documentSymbol,
     'textDocument/hover': hover
 };
-const methodsThatAreRequest = [/textDocument\/[a-zA-Z]+/]
+const methodsThatAreRequest = [/textDocument\/[a-zA-Z]+/];
 
-function respond(id: RequestMessage['id'], result: object|null) {
-    if(result==null) return;
+function respond(id: RequestMessage['id'], result: object | null) {
+    if (result == null) return;
     const message = JSON.stringify({ id, result });
     const header = `Content-Length: ${Buffer.byteLength(message, 'utf8')}\r\n\r\n`;
 
@@ -46,12 +45,12 @@ process.stdin.on('data', (dataChunk) => {
         if (methodMap[parsedMessage.method] !== undefined) {
             let res;
 
-            if(methodsThatAreRequest.some(r=>r.test(parsedMessage.method))&&ReceivedShutdown.get()) {
+            if (methodsThatAreRequest.some(r => r.test(parsedMessage.method)) && ReceivedShutdown.get()) {
                 res = {
-                    code:ErrorCodes.InvalidRequest,
-                    message:'Server is shutting down.'
+                    code: ErrorCodes.InvalidRequest,
+                    message: 'Server is shutting down.'
                 };
-            } else res = methodMap[parsedMessage.method](parsedMessage)??null;
+            } else res = methodMap[parsedMessage.method](parsedMessage) ?? null;
             respond(parsedMessage.id, res);
         }
 
