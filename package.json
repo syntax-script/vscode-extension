@@ -6,7 +6,9 @@
   "version": "1.0.0",
   "publisher": "efekos",
   "categories": [
-    "Snippets","Programming Languages","Formatters"
+    "Snippets",
+    "Programming Languages",
+    "Formatters"
   ],
   "engines": {
     "vscode": "^1.75.0"
@@ -19,14 +21,14 @@
   "main": "./client/out/extension",
   "contributes": {
     "configuration": {},
-    "commands":[
+    "commands": [
       {
         "command": "syntaxs.reload",
         "title": "Reload Language Server",
         "enablement": "true",
         "category": "Syntax Script",
         "shortTitle": "Reload Language Server",
-        "icon":"$(reload)"
+        "icon": "$(reload)"
       }
     ]
   },
@@ -37,8 +39,8 @@
     "postinstall": "cd client && npm install && cd ../server && npm install && cd .."
   },
   "devDependencies": {
-    "@types/node": "^20.12.7",
-    "typescript": "^5.4.5"
+    "@types/node": "^20.14.15",
+    "typescript": "^5.5.4"
   },
   "dependencies": {
     "@syntaxs/compiler": "file:../../syntaxScript/compiler/package/syntaxs-compiler-0.0.3-alpha.tgz"
